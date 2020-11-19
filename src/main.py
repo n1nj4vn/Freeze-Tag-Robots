@@ -12,8 +12,11 @@ import getopt
 import random as r
 import sys
 import datetime
+import matplotlib.pyplot as plt
 
 from jarvis_march import JarvisMarch
+from visualizer import plotInitial
+from visualizer import plotPoints
 
 test_input_sizes = [10, 100, 1000, 10000, 100000, 1000000, 10000000]
 
@@ -96,25 +99,73 @@ def main(argv):
         point_list = construct_point_list(input_file)
         print(point_list)
 
-        print("Running Jarvis March Convex Hull")
-        # Sort points and find point guaranteed to be on hull (leftmost point)
-        start_time = datetime.datetime.now()
+        # uncomment this line for evaluation
+        # evaluatejarvismarch(point_list, output_file_jm)
 
+        #visualizejarvismarchsequential(point_list)
+        visualizejarvismarchparallel(point_list)
+
+def visualizejarvismarchparallel(point_list):
+    subhulls = []
+    plotInitial(point_list)
+    while (len(point_list) > 6):
         sorted_points = sort_points_list(point_list)
         jm = JarvisMarch(sorted_points)
         jm_point_list = jm.run_jarvis_march_convex_hull()
+        subhulls.append(jm_point_list)
+        for p in jm_point_list:
+            point_list.remove(p)
+    subhulls.append(point_list)
+    activeSubHulls = []
+    while len(subhulls) > 0 or len(activeSubHulls) > 0:
+        plotTimeStep = []
+        if len(subhulls) > 0:
+            activeSubHulls.append(subhulls[0])
+            subhulls.remove(subhulls[0])
+        for subhull in activeSubHulls:
+            if len(subhull) == 0:
+                activeSubHulls.remove(subhull)
+                continue
+            plotTimeStep.append(subhull[0])
+            subhull.remove(subhull[0])
+    plt.show()
 
-        end_time = datetime.datetime.now()
-        delta = end_time - start_time
-        milliseconds = int(delta.total_seconds() * 1000)
-        print("Time elapsed (ms): " + str(milliseconds))
+def visualizejarvismarchsequential(point_list):
+    plotInitial(point_list)
+    # KMEans cluster with running subhull algorithm on clusters
+    #evaluate all subhulls, make list of the subhulls, in each iteration of the loop create new robot, decremetn from each subhull based on number of available agents
 
-        print("Jarvis March Results (saved to " + output_file_jm + ")")
-        print(jm_point_list)
-        output_jm = open(output_file_jm, "w")
-        output_jm.write(str(len(jm_point_list)) + "\n")
-        for point in jm_point_list:
-            output_jm.write(str(point[0]) + " " + str(point[1]) + "\n")
+    while(len(point_list) > 6):
+        sorted_points = sort_points_list(point_list)
+        jm = JarvisMarch(sorted_points)
+        jm_point_list = jm.run_jarvis_march_convex_hull()
+        plotPoints(jm_point_list)
+        for p in jm_point_list:
+            point_list.remove(p)
+
+
+    plotPoints(point_list)
+
+def evaluatejarvismarch(point_list, output_file_jm):
+    print("Running Jarvis March Convex Hull")
+    # Sort points and find point guaranteed to be on hull (leftmost point)
+    start_time = datetime.datetime.now()
+
+    sorted_points = sort_points_list(point_list)
+    jm = JarvisMarch(sorted_points)
+    jm_point_list = jm.run_jarvis_march_convex_hull()
+
+    end_time = datetime.datetime.now()
+    delta = end_time - start_time
+    milliseconds = int(delta.total_seconds() * 1000)
+    print("Time elapsed (ms): " + str(milliseconds))
+
+    print("Jarvis March Results (saved to " + output_file_jm + ")")
+    print(jm_point_list)
+    output_jm = open(output_file_jm, "w")
+    output_jm.write(str(len(jm_point_list)) + "\n")
+    for point in jm_point_list:
+        output_jm.write(str(point[0]) + " " + str(point[1]) + "\n")
 
 
 if __name__ == "__main__":
