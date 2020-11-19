@@ -13,6 +13,10 @@ import random as r
 import sys
 import datetime
 import matplotlib.pyplot as plt
+import math
+import copy
+from sklearn.cluster import KMeans
+import numpy as np
 
 from jarvis_march import JarvisMarch
 from visualizer import plotInitial
@@ -101,9 +105,77 @@ def main(argv):
 
         # uncomment this line for evaluation
         # evaluatejarvismarch(point_list, output_file_jm)
+        # evaluatebruteforce(copy.deepcopy(point_list))
+        # visualizejarvismarchsequential(point_list)
+        # visualizejarvismarchparallel(point_list)
+        # evaluatejarvismarchparallel(copy.deepcopy(point_list))
+        # evaluatejarvismarchsequential(copy.deepcopy(point_list))
+        evaluatekmeansclustering(copy.deepcopy(point_list))
 
-        #visualizejarvismarchsequential(point_list)
-        visualizejarvismarchparallel(point_list)
+def evaluatebruteforce(point_list):
+    totaldist = 0
+    previouspoint = [0 , 0]
+    for p in point_list:
+        totaldist += math.sqrt(((previouspoint[0]-p[0])**2)+((previouspoint[1]-p[1])**2))
+        previouspoint = p
+    print("Total distance traveled Brute Force: " + str(totaldist))
+
+def evaluatekmeansclustering(point_list):
+    kmeans = KMeans(n_clusters=4, random_state=0).fit(point_list)
+    print("hi")
+
+def evaluatejarvismarchsequential(point_list):
+    subhullflat = []
+    totaldist = 0
+    while (len(point_list) > 6):
+        sorted_points = sort_points_list(point_list)
+        jm = JarvisMarch(sorted_points)
+        jm_point_list = jm.run_jarvis_march_convex_hull()
+        for p in jm_point_list:
+            point_list.remove(p)
+            subhullflat.append(p)
+    for p in point_list:
+        subhullflat.append(p)
+    for i in range(len(subhullflat) - 1):
+        totaldist += math.sqrt(((subhullflat[i][0] - subhullflat[i + 1][0]) ** 2) + ((subhullflat[i][1] - subhullflat[i + 1][1]) ** 2))
+    print("Total distance traveled Jarvis March Sequential: " + str(totaldist))
+
+def evaluatejarvismarchparallel(point_list):
+    availablerobots = [(0, 0)]
+    subhulls = []
+    activeSubHulls = []
+    subhulldist = []
+    totaldist = 0
+    while (len(point_list) > 6):
+        sorted_points = sort_points_list(point_list)
+        jm = JarvisMarch(sorted_points)
+        jm_point_list = jm.run_jarvis_march_convex_hull()
+        subhulls.append(jm_point_list)
+        for p in jm_point_list:
+            point_list.remove(p)
+    subhulls.append(point_list)
+    subhullcopy = copy.deepcopy(subhulls)
+    while len(subhulls) != len(subhulldist):
+        for hull in activeSubHulls:
+            if len(hull) == 0:
+                activeSubHulls.remove(hull)
+                continue
+            availablerobots.append(hull[0])
+            hull.remove(hull[0])
+        for robot in availablerobots:
+            if len(subhullcopy) > 0:
+                tmp = copy.deepcopy(subhullcopy[0])
+                tmp.insert(0, robot)
+                subhulldist.append(tmp)
+                activeSubHulls.append(subhullcopy[0])
+                subhullcopy.remove(subhullcopy[0])
+                availablerobots.remove(robot)
+            else:
+                break
+    for hull in subhulldist:
+        for i in range(len(hull) - 1):
+            totaldist += math.sqrt(((hull[i][0] - hull[i + 1][0]) ** 2) + ((hull[i][1] - hull[i + 1][1]) ** 2))
+    print("Total distance traveled Jarvis March Parallel: " + str(totaldist))
 
 def visualizejarvismarchparallel(point_list):
     subhulls = []
@@ -128,6 +200,8 @@ def visualizejarvismarchparallel(point_list):
                 continue
             plotTimeStep.append(subhull[0])
             subhull.remove(subhull[0])
+        plotPoints(plotTimeStep)
+        plt.pause(0.5)
     plt.show()
 
 def visualizejarvismarchsequential(point_list):
