@@ -108,9 +108,12 @@ def main(argv):
         # evaluatebruteforce(copy.deepcopy(point_list))
         # visualizejarvismarchsequential(point_list)
         # visualizejarvismarchparallel(point_list)
+        # visualizekmeansclusteringparallel(point_list)
+        visualizekmeansclusteringsequential(point_list)
         # evaluatejarvismarchparallel(copy.deepcopy(point_list))
         # evaluatejarvismarchsequential(copy.deepcopy(point_list))
-        evaluatekmeansclustering(copy.deepcopy(point_list))
+        # evaluatekmeansclusteringparallel(copy.deepcopy(point_list))
+        # evaluatekmeansclusteringsequential(copy.deepcopy(point_list))
 
 def evaluatebruteforce(point_list):
     totaldist = 0
@@ -120,9 +123,114 @@ def evaluatebruteforce(point_list):
         previouspoint = p
     print("Total distance traveled Brute Force: " + str(totaldist))
 
-def evaluatekmeansclustering(point_list):
-    kmeans = KMeans(n_clusters=4, random_state=0).fit(point_list)
-    print("hi")
+def evaluatekmeansclusteringsequential(point_list):
+    numclusters = 4
+    totaldist = 0
+    previouspoint = (0, 0)
+    kmeans = KMeans(n_clusters=numclusters, random_state=0).fit(point_list)
+    clusters = [[] for x in range(numclusters)]
+    for i in range(len(kmeans.labels_)):
+        clusters[kmeans.labels_[i]].append(point_list[i])
+    for cluster in clusters:
+        for i in range(len(cluster)):
+            totaldist += math.sqrt(
+                ((previouspoint[0] - cluster[i][0]) ** 2) + ((previouspoint[1] - cluster[i][1]) ** 2))
+            previouspoint = cluster[i]
+    print("Total distance traveled KMeans Sequential: " + str(totaldist))
+
+def visualizekmeansclusteringsequential(point_list):
+    numclusters = 4
+    totaldist = 0
+    previouspoint = (0, 0)
+    kmeans = KMeans(n_clusters=numclusters, random_state=0).fit(point_list)
+    clusters = [[] for x in range(numclusters)]
+    plotInitial(point_list)
+    for i in range(len(kmeans.labels_)):
+        clusters[kmeans.labels_[i]].append(point_list[i])
+    for cluster in clusters:
+        for i in range(len(cluster)):
+            plotPoints([cluster[i]])
+            plt.pause(.1)
+    plt.show()
+
+def visualizekmeansclusteringparallel(point_list):
+    availablerobots = [(0, 0)]
+    activeClusters = []
+    clusterdist = []
+    numclusters = 4
+
+    plotInitial(point_list)
+    kmeans = KMeans(n_clusters=numclusters, random_state=0).fit(point_list)
+    clusters = [[] for x in range(numclusters)]
+    for i in range(len(kmeans.labels_)):
+        clusters[kmeans.labels_[i]].append(point_list[i])
+    subhullcopy = copy.deepcopy(clusters)
+    while len(clusters) != len(clusterdist):
+        for cluster in activeClusters:
+            if len(cluster) == 0:
+                activeClusters.remove(cluster)
+                continue
+            availablerobots.append(cluster[0])
+            cluster.remove(cluster[0])
+        for robot in availablerobots:
+            if len(subhullcopy) > 0:
+                tmp = copy.deepcopy(subhullcopy[0])
+                tmp.insert(0, robot)
+                clusterdist.append(tmp)
+                activeClusters.append(subhullcopy[0])
+                subhullcopy.remove(subhullcopy[0])
+                availablerobots.remove(robot)
+            else:
+                break
+    plottingclusters = []
+    while len(clusterdist) > 0 or len(plottingclusters) > 0:
+        plotTimeStep = []
+        if len(clusterdist) > 0:
+            plottingclusters.append(clusterdist[0])
+            clusterdist.remove(clusterdist[0])
+        for subhull in plottingclusters:
+            if len(subhull) == 0:
+                plottingclusters.remove(subhull)
+                continue
+            plotTimeStep.append(subhull[0])
+            subhull.remove(subhull[0])
+        plotPoints(plotTimeStep)
+        plt.pause(0.5)
+    plt.show()
+
+
+def evaluatekmeansclusteringparallel(point_list):
+    availablerobots = [(0, 0)]
+    activeClusters = []
+    clusterdist = []
+    totaldist = 0
+    numclusters = 4
+    kmeans = KMeans(n_clusters=numclusters, random_state=0).fit(point_list)
+    clusters = [[] for x in range(numclusters)]
+    for i in range(len(kmeans.labels_)):
+        clusters[kmeans.labels_[i]].append(point_list[i])
+    subhullcopy = copy.deepcopy(clusters)
+    while len(clusters) != len(clusterdist):
+        for cluster in activeClusters:
+            if len(cluster) == 0:
+                activeClusters.remove(cluster)
+                continue
+            availablerobots.append(cluster[0])
+            cluster.remove(cluster[0])
+        for robot in availablerobots:
+            if len(subhullcopy) > 0:
+                tmp = copy.deepcopy(subhullcopy[0])
+                tmp.insert(0, robot)
+                clusterdist.append(tmp)
+                activeClusters.append(subhullcopy[0])
+                subhullcopy.remove(subhullcopy[0])
+                availablerobots.remove(robot)
+            else:
+                break
+    for cluster in clusterdist:
+        for i in range(len(cluster) - 1):
+            totaldist += math.sqrt(((cluster[i][0] - cluster[i + 1][0]) ** 2) + ((cluster[i][1] - cluster[i + 1][1]) ** 2))
+    print("Total distance traveled KMeans Parallel: " + str(totaldist))
 
 def evaluatejarvismarchsequential(point_list):
     subhullflat = []
@@ -213,12 +321,12 @@ def visualizejarvismarchsequential(point_list):
         sorted_points = sort_points_list(point_list)
         jm = JarvisMarch(sorted_points)
         jm_point_list = jm.run_jarvis_march_convex_hull()
-        plotPoints(jm_point_list)
         for p in jm_point_list:
             point_list.remove(p)
-
-
+            plotPoints([p])
+            plt.pause(.1)
     plotPoints(point_list)
+    plt.show()
 
 def evaluatejarvismarch(point_list, output_file_jm):
     print("Running Jarvis March Convex Hull")
