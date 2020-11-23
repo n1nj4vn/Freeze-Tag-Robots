@@ -8,21 +8,21 @@ This process is repeated until there are only 6 points left. Each subhull is sav
 In the sequential version a single robot moves through the list of subhulls, waking up every robot along the way. 
 The following GIF is the sequential version
 
-![Sequential Jarvis March Freeze Tag Robots](../JarvisMarchSequential.gif)
+![Sequential Jarvis March Freeze Tag Robots](JarvisMarchSequential.gif)
 
 In the parallel version when a robot is woken up, it checks the list of subhulls. If there is a subhull available, the robot will remove the subhull from the list and begin waking up all the robots in that subhull.
 This process continues until all the robots are awoken.
 
-![Parallel Jarvis March Freeze Tag Robots](../JarvisMarchParallel.gif)
+![Parallel Jarvis March Freeze Tag Robots](JarvisMarchParallel.gif)
 
 **KMeans Clustered Awakening**
 Another solution we propose is called KMeans Clustered Awakening. This solution uses the KMeans clustering algorithm to cluster all the points in the set.
 Once the clusters have been determined the sequential version utilizes a single robot to move through every cluster and wake up every robot. 
 The path the robot takes within the cluster is random based on the input order of the points. The following give shows the sequential version
 
-![Sequential KMeans Freeze Tag Robots](../KMeansSequential.gif)
+![Sequential KMeans Freeze Tag Robots](KMeansSequential.gif)
 
 The parallel version, similar to Jarvis March Convex Subhulls, uses the list of clusters as work orders. A robot that is awoken will check to see if there are any available clusters.
 If there are it will move to wake up that cluster. The following GIF visualizes KMeans Clustered Awakening Parallel
 
-![Parallel KMeans Freeze Tag Robots](../KMeansParallel.gif)
+![Parallel KMeans Freeze Tag Robots](KMeansParallel.gif)
