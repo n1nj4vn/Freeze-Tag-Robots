@@ -1,37 +1,28 @@
-## Welcome to GitHub Pages
+# Freeze-Tag-Robots
+Different algorithms for the "Freeze-Tag Problem: How to Wake Up a Swarm of Robots" and a visualizer to demonstrate the different algorithms.
 
-You can use the [editor on GitHub](https://github.com/n1nj4vn/Freeze-Tag-Robots/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+**Jarvis March Convex Subhulls**
+A solution we propose is called Jarvis March Convex Subhulls. This solution uses the Jarvis March algorithm to compute all the subhulls of a set of points. 
+To do this the convex hull of the set of points is computed. Then all points that were part of the convex hull are removed from the set. Then the next convex hull is computed.
+This process is repeated until there are only 6 points left. Each subhull is saved to a list. This list of subhulls serves as a work order list. 
+In the sequential version a single robot moves through the list of subhulls, waking up every robot along the way. 
+The following GIF is the sequential version
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![Sequential Jarvis March Freeze Tag Robots](../JarvisMarchSequential.gif)
 
-### Markdown
+In the parallel version when a robot is woken up, it checks the list of subhulls. If there is a subhull available, the robot will remove the subhull from the list and begin waking up all the robots in that subhull.
+This process continues until all the robots are awoken.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+![Parallel Jarvis March Freeze Tag Robots](../JarvisMarchParallel.gif)
 
-```markdown
-Syntax highlighted code block
+**KMeans Clustered Awakening**
+Another solution we propose is called KMeans Clustered Awakening. This solution uses the KMeans clustering algorithm to cluster all the points in the set.
+Once the clusters have been determined the sequential version utilizes a single robot to move through every cluster and wake up every robot. 
+The path the robot takes within the cluster is random based on the input order of the points. The following give shows the sequential version
 
-# Header 1
-## Header 2
-### Header 3
+![Sequential KMeans Freeze Tag Robots](../KMeansSequential.gif)
 
-- Bulleted
-- List
+The parallel version, similar to Jarvis March Convex Subhulls, uses the list of clusters as work orders. A robot that is awoken will check to see if there are any available clusters.
+If there are it will move to wake up that cluster. The following GIF visualizes KMeans Clustered Awakening Parallel
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/n1nj4vn/Freeze-Tag-Robots/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+![Parallel KMeans Freeze Tag Robots](../KMeansParallel.gif)
