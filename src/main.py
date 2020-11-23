@@ -105,15 +105,15 @@ def main(argv):
 
         # uncomment this line for evaluation
         # evaluatejarvismarch(point_list, output_file_jm)
-        # evaluatebruteforce(copy.deepcopy(point_list))
+        evaluatebruteforce(copy.deepcopy(point_list))
+        evaluatejarvismarchparallel(copy.deepcopy(point_list))
+        evaluatejarvismarchsequential(copy.deepcopy(point_list))
+        evaluatekmeansclusteringparallel(copy.deepcopy(point_list))
+        evaluatekmeansclusteringsequential(copy.deepcopy(point_list))
         # visualizejarvismarchsequential(point_list)
         # visualizejarvismarchparallel(point_list)
         # visualizekmeansclusteringparallel(point_list)
-        visualizekmeansclusteringsequential(point_list)
-        # evaluatejarvismarchparallel(copy.deepcopy(point_list))
-        # evaluatejarvismarchsequential(copy.deepcopy(point_list))
-        # evaluatekmeansclusteringparallel(copy.deepcopy(point_list))
-        # evaluatekmeansclusteringsequential(copy.deepcopy(point_list))
+        # visualizekmeansclusteringsequential(point_list)
 
 def evaluatebruteforce(point_list):
     totaldist = 0
@@ -122,6 +122,7 @@ def evaluatebruteforce(point_list):
         totaldist += math.sqrt(((previouspoint[0]-p[0])**2)+((previouspoint[1]-p[1])**2))
         previouspoint = p
     print("Total distance traveled Brute Force: " + str(totaldist))
+    print("Total time taken in seconds at 5 units/sec: " + str(totaldist/5))
 
 def evaluatekmeansclusteringsequential(point_list):
     numclusters = 4
@@ -137,6 +138,7 @@ def evaluatekmeansclusteringsequential(point_list):
                 ((previouspoint[0] - cluster[i][0]) ** 2) + ((previouspoint[1] - cluster[i][1]) ** 2))
             previouspoint = cluster[i]
     print("Total distance traveled KMeans Sequential: " + str(totaldist))
+    print("Total time taken in seconds at 5 units/sec: " + str(totaldist/5))
 
 def visualizekmeansclusteringsequential(point_list):
     numclusters = 4
@@ -145,6 +147,8 @@ def visualizekmeansclusteringsequential(point_list):
     kmeans = KMeans(n_clusters=numclusters, random_state=0).fit(point_list)
     clusters = [[] for x in range(numclusters)]
     plotInitial(point_list)
+    plt.pause(1)
+
     for i in range(len(kmeans.labels_)):
         clusters[kmeans.labels_[i]].append(point_list[i])
     for cluster in clusters:
@@ -160,6 +164,8 @@ def visualizekmeansclusteringparallel(point_list):
     numclusters = 4
 
     plotInitial(point_list)
+    plt.pause(1)
+
     kmeans = KMeans(n_clusters=numclusters, random_state=0).fit(point_list)
     clusters = [[] for x in range(numclusters)]
     for i in range(len(kmeans.labels_)):
@@ -227,10 +233,16 @@ def evaluatekmeansclusteringparallel(point_list):
                 availablerobots.remove(robot)
             else:
                 break
+    maxtime = 0
     for cluster in clusterdist:
+        tdist = 0
         for i in range(len(cluster) - 1):
+            tdist += math.sqrt(((cluster[i][0] - cluster[i + 1][0]) ** 2) + ((cluster[i][1] - cluster[i + 1][1]) ** 2))
             totaldist += math.sqrt(((cluster[i][0] - cluster[i + 1][0]) ** 2) + ((cluster[i][1] - cluster[i + 1][1]) ** 2))
+        if maxtime < tdist:
+            maxtime = tdist
     print("Total distance traveled KMeans Parallel: " + str(totaldist))
+    print("Total time in seconds taken at 5 units/sec: " + str(maxtime/5))
 
 def evaluatejarvismarchsequential(point_list):
     subhullflat = []
@@ -247,6 +259,7 @@ def evaluatejarvismarchsequential(point_list):
     for i in range(len(subhullflat) - 1):
         totaldist += math.sqrt(((subhullflat[i][0] - subhullflat[i + 1][0]) ** 2) + ((subhullflat[i][1] - subhullflat[i + 1][1]) ** 2))
     print("Total distance traveled Jarvis March Sequential: " + str(totaldist))
+    print("Total time taken in seconds at 5 units/sec: " + str(totaldist/5))
 
 def evaluatejarvismarchparallel(point_list):
     availablerobots = [(0, 0)]
@@ -280,14 +293,22 @@ def evaluatejarvismarchparallel(point_list):
                 availablerobots.remove(robot)
             else:
                 break
+    maxtime = 0
     for hull in subhulldist:
+        tdist = 0
         for i in range(len(hull) - 1):
+            tdist += math.sqrt(((hull[i][0] - hull[i + 1][0]) ** 2) + ((hull[i][1] - hull[i + 1][1]) ** 2))
             totaldist += math.sqrt(((hull[i][0] - hull[i + 1][0]) ** 2) + ((hull[i][1] - hull[i + 1][1]) ** 2))
+        if maxtime < tdist:
+            maxtime = tdist
     print("Total distance traveled Jarvis March Parallel: " + str(totaldist))
+    print("Total time taken in seconds at 5 units/sec: " + str(maxtime/5))
 
 def visualizejarvismarchparallel(point_list):
     subhulls = []
     plotInitial(point_list)
+    plt.pause(1)
+
     while (len(point_list) > 6):
         sorted_points = sort_points_list(point_list)
         jm = JarvisMarch(sorted_points)
@@ -314,8 +335,7 @@ def visualizejarvismarchparallel(point_list):
 
 def visualizejarvismarchsequential(point_list):
     plotInitial(point_list)
-    # KMEans cluster with running subhull algorithm on clusters
-    #evaluate all subhulls, make list of the subhulls, in each iteration of the loop create new robot, decremetn from each subhull based on number of available agents
+    plt.pause(1)
 
     while(len(point_list) > 6):
         sorted_points = sort_points_list(point_list)
