@@ -8,32 +8,53 @@
 Category 2: Work on Open Problems in the Field
 
 ## Description
-    A specific description of the problem that you are trying to solve, in two sentences or less. This may be an answer to a question like: What does your application do? What is your visualization trying to show? What open problem were you trying to address?
-
-Different algorithms for the "Freeze-Tag Problem: How to Wake Up a Swarm of Robots" and a visualizer to demonstrate the different algorithms.
+This project will be our approaches to the open “__Freeze-Tag Robot__” problem. We have implemented __brute force__, __Jarvis March__, and __KMeans clustering__ algorithm and a visualizer to demonstrate these different algorithms and their time complexity. These algorithms are inspired by the topics we have learned in our current and previous courses.
 
 ## Background Information
-
     Background information about the problem. What is the current best known algorithm? What are the proven theoretical bounds on the problem?
+    
+From Arkin, 2002:
+- Consider a set of n robots, modeled as points in some metric space
+- Initially, there is one ‘awake’ robot and all others are asleep
+- Goal is to ‘wake up’ all of the robots as quickly as possible
+- To wake up a sleeping robot, an awake robot must go to its location
+- Objective is to minimize the ‘makespan’, which is the time when the last robot is awakened
+
+Similar to finding a spanning tree with maximum out-degree two that minimizes the radius from a fixed source (Problem 35)
+
+#### Applications
+- Distributed Systems: How to efficiently replicate data across multiple nodes if physical distance is a factor
+- Activating sleeper cell spy agents
+- Virus Transmission model
+
+#### Author's Improvements
+
+###### Density-Based Strategy
+- First define a dense region of the domain
+- Identify dense subtree T’ and activate it recursively
+- O(1)-approximation for Euclidean spaces
+- O((log n) ^log(5/3)) - approximation for unweighted graphs
+
+###### Sibling-Based Strategy
+- Have spanning tree T
+- Each Robot that is awoken wakes its children
 
 ## Application Domain
-
     If you have an application domain problem:
 
     Background information about the problem.
 
     What are your specific inputs and outputs (show a visualization, if possible).
+    
+Set of randomly placed robots, output is distance and time it took to wake up all the robots.
 
     What are the needs for the problem domain -- is it important that you find the optimal solution? why or why not?
 
     Are there related projects by others that tackle the same problem. How?
-
-    Describe your algorithm and show example results.
-
-    Give a complexity analysis of your algorithm, and also show measured running time for different sizes of inputs 
+    
+Travelling salesman?
 
 ## Approaches
-
     What approaches have you tried? Can you visualize the results? Show sketches of where proof attempts have failed, or example point sets where your (mostly good) algorithm has a bad case?
 
 ### Jarvis March Convex Subhulls
@@ -62,7 +83,65 @@ If there are it will move to wake up that cluster. The following GIF visualizes 
 
 ![Parallel KMeans Freeze Tag Robots](KMeansParallel.gif)
 
+## Complexity Analysis
+    Give a complexity analysis of your algorithm, and also show measured running time for different sizes of inputs 
+
+## Visualizer
+Our visualizer helps to provide a meaningful demonstration of the implemented algorithms. You can see how the sequential algorithms take much more time to wake up all the robots.
+
 ## Results
+
+#### Distance Travelled 100 Points
+|              | Sequential | Parallel |
+|--------------|------------|----------|
+| Brute Force  |     10,202 |          |
+| Kmeans       |      5,419 |    5,312 |
+| Jarvis March |      4,357 |    4,686 | 
+
+![Distance Travelled 100 Points](Distance%20Travelled%20100%20Points.png)
+
+#### Time Taken in seconds for 100 Points
+|              | Sequential | Parallel |
+|--------------|------------|----------|
+| Brute Force  |      2,040 |          |
+| Kmeans       |      1,083 |      314 |
+| Jarvis March |        871 |      161 |
+
+![Time Taken in seconds for 100 Points](Time%20Taken%20100%20Points.png)
+
+#### Distance Travelled 1,000 Points
+|              | Sequential | Parallel |
+|--------------|------------|----------|
+| Brute Force  |  1,030,012 |          |
+| Kmeans       |    523,112 |  522,269 |
+| Jarvis March |    203,727 |  218,698 |
+![Distance Travelled 1,000 Points](Distance%20Travelled%201,000%20Points.png)
+
+#### Time Taken in seconds for 1,000 Points
+|              | Sequential | Parallel |
+|--------------|------------|----------|
+| Brute Force  |    212,002 |          |
+| Kmeans       |    104,622 |   27,713 |
+| Jarvis March |     40,745 |    1,528 |
+
+![Time Taken in seconds for 1,000 Points](Time%20Taken%201,000%20Points.png)
+
+#### Distance Travelled 10,000 Points
+|              | Sequential  | Parallel   |
+|--------------|-------------|------------|
+| Brute Force  | 104,521,104 |            |
+| Kmeans       |  52,315,254 | 52,322,947 |
+| Jarvis March |   9,581,006 | 10,598,284 |
+![Distance Travelled 10,000 Points](Distance%20Travelled%2010,000%20Points.png)
+
+#### Time Taken in seconds for 10,000 Points
+|              | Sequential | Parallel  |
+|--------------|------------|-----------|
+| Brute Force  | 20,904,220 |           |
+| Kmeans       | 10,463,050 | 2,675,462 |
+| Jarvis March |  1,916,201 |    17,628 |
+
+![Time Taken in seconds for 10,000 Points](Time%20Taken%2010,000%20Points.png)
 
 ## Conclusion
 
