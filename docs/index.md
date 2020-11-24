@@ -98,7 +98,7 @@ Our visualizer helps to provide a meaningful demonstration of the implemented al
 | Kmeans       |      5,419 |    5,312 |
 | Jarvis March |      4,357 |    4,686 | 
 
-![Distance Travelled 100 Points](Distance%20Travelled%20100%20Points.png)
+![Distance Travelled 100 Points](Distance Travelled 100 Points.png)
 
 #### Time Taken in seconds for 100 Points
 |              | Sequential | Parallel |
@@ -107,7 +107,7 @@ Our visualizer helps to provide a meaningful demonstration of the implemented al
 | Kmeans       |      1,083 |      314 |
 | Jarvis March |        871 |      161 |
 
-![Time Taken in seconds for 100 Points](Time%20Taken%20100%20Points.png)
+![Time Taken in seconds for 100 Points](Time Taken 100 Points.png)
 
 #### Distance Travelled 1,000 Points
 |              | Sequential | Parallel |
@@ -115,7 +115,8 @@ Our visualizer helps to provide a meaningful demonstration of the implemented al
 | Brute Force  |  1,030,012 |          |
 | Kmeans       |    523,112 |  522,269 |
 | Jarvis March |    203,727 |  218,698 |
-![Distance Travelled 1,000 Points](Distance%20Travelled%201,000%20Points.png)
+
+![Distance Travelled 1,000 Points](Distance Travelled 1,000 Points.png)
 
 #### Time Taken in seconds for 1,000 Points
 |              | Sequential | Parallel |
@@ -124,7 +125,7 @@ Our visualizer helps to provide a meaningful demonstration of the implemented al
 | Kmeans       |    104,622 |   27,713 |
 | Jarvis March |     40,745 |    1,528 |
 
-![Time Taken in seconds for 1,000 Points](Time%20Taken%201,000%20Points.png)
+![Time Taken in seconds for 1,000 Points](Time Taken 1,000 Points.png)
 
 #### Distance Travelled 10,000 Points
 |              | Sequential  | Parallel   |
@@ -132,7 +133,7 @@ Our visualizer helps to provide a meaningful demonstration of the implemented al
 | Brute Force  | 104,521,104 |            |
 | Kmeans       |  52,315,254 | 52,322,947 |
 | Jarvis March |   9,581,006 | 10,598,284 |
-![Distance Travelled 10,000 Points](Distance%20Travelled%2010,000%20Points.png)
+![Distance Travelled 10,000 Points](Distance Travelled 10,000 Points.png)
 
 #### Time Taken in seconds for 10,000 Points
 |              | Sequential | Parallel  |
@@ -141,7 +142,7 @@ Our visualizer helps to provide a meaningful demonstration of the implemented al
 | Kmeans       | 10,463,050 | 2,675,462 |
 | Jarvis March |  1,916,201 |    17,628 |
 
-![Time Taken in seconds for 10,000 Points](Time%20Taken%2010,000%20Points.png)
+![Time Taken in seconds for 10,000 Points](Time Taken 10,000 Points.png)
 
 ## Conclusion
 
